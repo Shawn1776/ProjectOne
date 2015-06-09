@@ -178,6 +178,12 @@ public class Table
 
         List <Comparable []> rows = new ArrayList<>();
 
+        for (Comparable[] tup:tuples) {
+            if (predicate.test(tup)) {
+                rows.add(tup);
+            }
+        }
+
         //  T O   B E   I M P L E M E N T E D 
 
         return new Table (name + count++, attribute, domain, key, rows);
@@ -199,11 +205,13 @@ public class Table
         //List <Comparable> array = new ArrayList<>();
         //  T O   B E   I M P L E M E N T E D
 
+
         for(int i = 0; i < tuples.size(); i++) {
             if(keyVal.equals(new KeyType(tuples.get(i)))) {
                 indexes.add(i);
             }
         }
+
 
 
         for(int i = 0; i < indexes.size(); i++) {
