@@ -176,7 +176,7 @@ public class Table
     {
         out.println ("RA> " + name + ".select (" + predicate + ")");
 
-        List <Comparable []> rows = null;
+        List <Comparable []> rows = new ArrayList<>();
 
         //  T O   B E   I M P L E M E N T E D 
 
@@ -194,9 +194,22 @@ public class Table
     {
         out.println ("RA> " + name + ".select (" + keyVal + ")");
 
-        List <Comparable []> rows = null;
+        List <Comparable []> rows = new ArrayList<>();
+        List <Integer> indexes = new ArrayList<>();
+        //List <Comparable> array = new ArrayList<>();
+        //  T O   B E   I M P L E M E N T E D
 
-        //  T O   B E   I M P L E M E N T E D 
+        for(int i = 0; i < tuples.size(); i++) {
+            if(keyVal.equals(new KeyType(tuples.get(i)))) {
+                indexes.add(i);
+            }
+        }
+
+
+        for(int i = 0; i < indexes.size(); i++) {
+            Comparable[] foo = tuples.get(indexes.get(i));
+            rows.add(foo);
+        }
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // select
