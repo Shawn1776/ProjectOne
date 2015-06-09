@@ -184,7 +184,7 @@ public class Table
             }
         }
 
-        //  T O   B E   I M P L E M E N T E D 
+
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // select
@@ -202,7 +202,6 @@ public class Table
 
         List <Comparable []> rows = new ArrayList<>();
         List <Integer> indexes = new ArrayList<>();
-        //List <Comparable> array = new ArrayList<>();
         //  T O   B E   I M P L E M E N T E D
 
 
@@ -235,7 +234,17 @@ public class Table
         out.println ("RA> " + name + ".union (" + table2.name + ")");
         if (! compatible (table2)) return null;
 
-        List <Comparable []> rows = null;
+        List <Comparable []> rows = new ArrayList<>();
+
+        for(Comparable[] tup:this.tuples) {
+            rows.add(tup);
+        }
+
+        for (Comparable[] tup2:table2.tuples) {
+            if(!rows.contains(tup2)) {
+                rows.add(tup2);
+            }
+        }
 
         //  T O   B E   I M P L E M E N T E D 
 
