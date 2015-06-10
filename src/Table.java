@@ -10,6 +10,7 @@ import java.util.function.*;
 import java.util.stream.*;
 
 import static java.lang.Boolean.*;
+import static java.lang.System.arraycopy;
 import static java.lang.System.out;
 
 /****************************************************************************************
@@ -272,9 +273,6 @@ public class Table
             if (rows.contains(tup2)) {
                 rows.remove(tup2);
             }
-            else {
-                rows.add(tup2);
-            }
         }
 
         //  T O   B E   I M P L E M E N T E D 
@@ -302,13 +300,48 @@ public class Table
         String[] t_attrs = attributes1.split(" ");
         String[] u_attrs = attributes2.split(" ");
 
-        List<Comparable[]> rows = null;
+        List<Comparable[]> rows = new ArrayList<>();
+        List<Comparable> array = new ArrayList<>();
+        List<Integer> t_indexes = new ArrayList<>();
+        List<Integer> u_indexes = new ArrayList<>();
+        //  T O   B E   I M P L E M E N T E D
 
-        //  T O   B E   I M P L E M E N T E D 
+        for(int i =0; i< attribute.length; i++) {
+            for (int j = 0; j < t_attrs.length; j++) {
+                if (attribute[i].equals(t_attrs[j])) {
+                    t_indexes.add(i);
+                }
+            }
+        }
+
+        Predicate<Comparable[]> predicate = null;
+
+        for(Comparable[] tup:this.tuples) {
+            Table temp = table2.select(t -> t[table2.col(u_attrs[0])].equals ((String)tup[t_indexes.get(0)]));
+            Comparable[] rw = joinHelper(tup, temp);
+            rows.add(rw);
+        }
+
+
+
+
 
         return new Table(name + count++, ArrayUtil.concat(attribute, table2.attribute),
                 ArrayUtil.concat(domain, table2.domain), key, rows);
     } // join
+
+    private Comparable[] joinHelper(Comparable[] tup, Table table1) {
+        Comparable[] temp = null;
+        try {
+            temp = table1.tuples.get(0);
+        }catch (Exception e) {
+            temp = new Comparable[table1.attribute.length];
+        }
+        Comparable[] res = new Comparable[tup.length+temp.length];
+        System.arraycopy(tup, 0, res, 0, tup.length);
+        System.arraycopy(temp, 0, res, tup.length, temp.length);
+        return res;
+    }
 
     /************************************************************************************
      * Return the column position for the given attribute name.
