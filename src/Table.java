@@ -558,7 +558,19 @@ public class Table
      * with the given domains
      */
     private boolean typeCheck(Comparable[] t) {
-        //  T O   B E   I M P L E M E N T E D 
+        //  T O   B E   I M P L E M E N T E D
+
+        if(t.length != this.domain.length) {
+            System.out.println("False");
+            return false;
+        }
+
+        for(int i =0; i < t.length; i++) {
+            if (!t[i].getClass().equals(this.domain[i])) {
+                System.out.println("False");
+                return false;
+            }
+        }
 
         return true;
     } // typeCheck
