@@ -301,12 +301,11 @@ public class Table
         String[] u_attrs = attributes2.split(" ");
 
         List<Comparable[]> rows = new ArrayList<>();
-        List<Comparable> array = new ArrayList<>();
         List<Integer> t_indexes = new ArrayList<>();
         List<Integer> u_indexes = new ArrayList<>();
         //  T O   B E   I M P L E M E N T E D
 
-        for(int i =0; i< attribute.length; i++) {
+        for (int i = 0; i < attribute.length; i++) {
             for (int j = 0; j < t_attrs.length; j++) {
                 if (attribute[i].equals(t_attrs[j])) {
                     t_indexes.add(i);
@@ -314,15 +313,41 @@ public class Table
             }
         }
 
-        Predicate<Comparable[]> predicate = null;
-
-        for(Comparable[] tup:this.tuples) {
-            Table temp = table2.select(t -> t[table2.col(u_attrs[0])].equals ((String)tup[t_indexes.get(0)]));
-            Comparable[] rw = joinHelper(tup, temp);
-            rows.add(rw);
+        for (int i = 0; i < table2.attribute.length; i++) {
+            for (int j = 0; j < u_attrs.length; j++) {
+                if (table2.attribute[i].equals(u_attrs[j])) {
+                    u_indexes.add(i);
+                }
+            }
         }
 
+        Predicate<Comparable[]> predicate = null;
 
+        for (Comparable[] tup : this.tuples) {
+            for (int i = 0; i < t_indexes.size(); i++) {
+
+                String att1 = u_attrs[u_indexes.get(i)];
+                Comparable att2 = tup[t_indexes.get(i)];
+
+                if(predicate != null) {
+                    predicate = predicate.and(t -> t[table2.col(att1)].equals(att2));
+                }else {
+
+                    predicate = t -> t[table2.col(att1)].equals(att2);
+                }
+            }
+
+
+            Table temp = table2.select(predicate);
+
+            predicate = null;
+
+            Comparable[] rw = joinHelper(tup, temp);
+
+            if(rw != null) {
+                rows.add(rw);
+            }
+        }
 
 
 
@@ -335,7 +360,7 @@ public class Table
         try {
             temp = table1.tuples.get(0);
         }catch (Exception e) {
-            temp = new Comparable[table1.attribute.length];
+            return temp;
         }
         Comparable[] res = new Comparable[tup.length+temp.length];
         System.arraycopy(tup, 0, res, 0, tup.length);
