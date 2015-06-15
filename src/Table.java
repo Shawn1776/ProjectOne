@@ -154,6 +154,7 @@ public class Table
         }
         //add the index to arrayList to get the correct index of the attributes
 
+        //create the new table cell by cell.
         for (Comparable[] tup : tuples) {
             for (int k = 0; k < indexes.size(); k++) {
                 array.add(tup[indexes.get(k)]);
@@ -180,6 +181,8 @@ public class Table
 
         List<Comparable[]> rows = new ArrayList<>();
 
+        //for each row, test the predicate,
+        //if true, add the row to the new nable
         for (Comparable[] tup : tuples) {
             if (predicate.test(tup)) {
                 rows.add(tup);
@@ -204,7 +207,7 @@ public class Table
         List<Integer> indexes = new ArrayList<>();
         //  T O   B E   I M P L E M E N T E D
 
-
+        //store the row index of the table that match the keyVal
         for (int i = 0; i < tuples.size(); i++) {
             if (keyVal.equals(new KeyType(tuples.get(i)))) {
                 indexes.add(i);
@@ -212,6 +215,7 @@ public class Table
         }
 
 
+        //add the rows to the new table
         for (int i = 0; i < indexes.size(); i++) {
             Comparable[] foo = tuples.get(indexes.get(i));
             rows.add(foo);
@@ -234,11 +238,13 @@ public class Table
 
         List<Comparable[]> rows = new ArrayList<>();
 
-
+        //add everything in table1 to new table
         for (Comparable[] tup : this.tuples) {
             rows.add(tup);
         }
 
+        //if the tuple in table2 does not exists in new table,
+        //add it to new table.
         for (Comparable[] tup2 : table2.tuples) {
             if (!rows.contains(tup2)) {
                 rows.add(tup2);
@@ -265,17 +271,17 @@ public class Table
 
         List<Comparable[]> rows = new ArrayList<>();
 
+        //add everything in table to new table
         for(Comparable[] tup:tuples) {
             rows.add(tup);
         }
 
+        //remove everything from new table that exists in table2.
         for(Comparable[] tup2:table2.tuples) {
             if (rows.contains(tup2)) {
                 rows.remove(tup2);
             }
         }
-
-        //  T O   B E   I M P L E M E N T E D 
 
         return new Table(name + count++, attribute, domain, key, rows);
     } // minus
@@ -305,6 +311,7 @@ public class Table
         List<Integer> u_indexes = new ArrayList<>();
         //  T O   B E   I M P L E M E N T E D
 
+        //store the index of the t_attrs
         for (int i = 0; i < attribute.length; i++) {
             for (int j = 0; j < t_attrs.length; j++) {
                 if (attribute[i].equals(t_attrs[j])) {
@@ -313,6 +320,7 @@ public class Table
             }
         }
 
+        //store the index of the r_attrs
         for (int i = 0; i < table2.attribute.length; i++) {
             for (int j = 0; j < u_attrs.length; j++) {
                 if (table2.attribute[i].equals(u_attrs[j])) {
@@ -324,6 +332,8 @@ public class Table
         Predicate<Comparable[]> predicate = null;
 
         for (Comparable[] tup : this.tuples) {
+
+            //generate the predicate for "select" method
             for (int i = 0; i < t_indexes.size(); i++) {
 
                 String att1 = u_attrs[u_indexes.get(i)];
@@ -339,8 +349,11 @@ public class Table
 
 
             Table temp = table2.select(predicate);
+            //select the table that meets the condition
+
 
             predicate = null;
+            //reset the predicate
 
             Comparable[] rw = joinHelper(tup, temp);
 
@@ -355,16 +368,28 @@ public class Table
                 ArrayUtil.concat(domain, table2.domain), key, rows);
     } // join
 
+    /**
+     * A function that combine a single line "table" and a tuple.
+     * @param tup original tuple
+     * @param table1 the table that need to be combined
+     * @return the new tuple consist of the parameter and the firstline of table.
+     */
     private Comparable[] joinHelper(Comparable[] tup, Table table1) {
         Comparable[] temp = null;
+
+        //if the parameter table1 is empty, return null
         try {
             temp = table1.tuples.get(0);
         }catch (Exception e) {
             return temp;
         }
+
+
         Comparable[] res = new Comparable[tup.length+temp.length];
         System.arraycopy(tup, 0, res, 0, tup.length);
         System.arraycopy(temp, 0, res, tup.length, temp.length);
+        //copy tup and the first row of the table1 to the new comparable array.
+
         return res;
     }
 
@@ -560,11 +585,15 @@ public class Table
     private boolean typeCheck(Comparable[] t) {
         //  T O   B E   I M P L E M E N T E D
 
+
+        //Compare the size of tuple and size of attributes
         if(t.length != this.domain.length) {
             System.out.println("False");
             return false;
         }
 
+        //Compare the type of each element in the tuple and the domain
+        //of the corresponding column
         for(int i =0; i < t.length; i++) {
             if (!t[i].getClass().equals(this.domain[i])) {
                 System.out.println("False");
